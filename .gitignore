@@ -1,0 +1,32 @@
+# Model weights (too large for git — use git-lfs or download separately)
+model/best.pt
+*.pt
+*.pth
+
+# Downloaded / generated data
+data/raw/
+data/labels/
+data/dataset/
+
+# Training runs output
+runs/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+.venv/
+
+# Temp files from icrawler / downloads
+data/_tmp_*/
+kaggle_data/
+taco_dataset/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/
