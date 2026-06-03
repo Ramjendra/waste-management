@@ -42,11 +42,39 @@ def parse_args():
     return p.parse_args()
 
 
+def fix_yaml_path():
+    """
+    Rewrite the 'path:' field in data.yaml to the current machine's absolute
+    path. This is necessary when the repo is cloned on a different machine.
+    """
+    if not YAML_PATH.exists():
+        return
+
+    current_abs = YAML_PATH.parent.resolve()
+    lines = YAML_PATH.read_text().splitlines()
+    new_lines = []
+    changed = False
+    for line in lines:
+        if line.startswith("path:"):
+            new_line = f"path: {current_abs}"
+            if line != new_line:
+                changed = True
+            new_lines.append(new_line)
+        else:
+            new_lines.append(line)
+
+    if changed:
+        YAML_PATH.write_text("\n".join(new_lines) + "\n")
+        print(f"[train] data.yaml path updated → {current_abs}")
+
+
 def check_dataset():
     if not YAML_PATH.exists():
         print(f"[ERROR] Dataset not found at {YAML_PATH}")
         print("        Run  python tools/prepare_dataset.py  first.")
         sys.exit(1)
+
+    fix_yaml_path()
 
     train_imgs = list((Path("data/dataset/train/images")).glob("*"))
     print(f"[train] Training images: {len(train_imgs)}")
