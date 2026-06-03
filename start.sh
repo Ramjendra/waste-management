@@ -225,7 +225,22 @@ else
   fi
 fi
 
-# ── Step 8: Launch Streamlit ──────────────────────────────────────────────────
+# ── Step 8: Train classifier (EfficientNet) ───────────────────────────────────
+echo ""
+echo -e "${BOLD}── Step 8: Classifier Training (EfficientNet-B0) ─────────${RESET}"
+
+if [[ "$SKIP_TRAIN" == true ]]; then
+  warn "--skip-train passed. Skipping classifier training."
+elif [[ -f "model/classifier.pt" ]]; then
+  log "model/classifier.pt already exists — skipping classifier training."
+else
+  info "Training EfficientNet-B0 classifier on bin images..."
+  $PYTHON_VENV tools/train_classifier.py --epochs 50 --batch 8
+  [[ -f "model/classifier.pt" ]] && log "Classifier saved → model/classifier.pt" \
+    || warn "Classifier training failed — YOLO-only mode will be used."
+fi
+
+# ── Step 9: Launch Streamlit ──────────────────────────────────────────────────
 if [[ "$TRAIN_ONLY" == true ]]; then
   echo ""
   log "Training done. Streamlit not started (--train-only)."
@@ -236,7 +251,7 @@ if [[ "$TRAIN_ONLY" == true ]]; then
 fi
 
 echo ""
-echo -e "${BOLD}── Step 8: Launching Streamlit ───────────────────────────${RESET}"
+echo -e "${BOLD}── Step 9: Launching Streamlit ───────────────────────────${RESET}"
 echo ""
 echo -e "${GREEN}${BOLD}  App will be available at:"
 echo -e "  http://localhost:$STREAMLIT_PORT${RESET}"

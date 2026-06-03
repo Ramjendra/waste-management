@@ -1,61 +1,119 @@
 """
-detector.py — YOLO model loader and inference engine.
+detector.py — Two-stage bin detection pipeline.
 
-Wraps Ultralytics YOLO with GPU support and a clean detect() interface
-that the rest of the pipeline calls.
+Stage 1 (YOLO):       Finds WHERE the bins are in the frame (bounding boxes).
+Stage 2 (Classifier): Determines WHAT STATE each bin is in (empty/partial/full).
+
+Why two stages?
+  YOLO trained on 120 auto-labeled images struggles to classify bin states.
+  EfficientNet classifier is far more accurate with small datasets because
+  it only needs to answer "which class is this image?" — not locate objects.
+
+Falls back to classifier-only (whole-frame) when YOLO finds nothing.
 """
 
 import torch
-from ultralytics import YOLO
+import numpy as np
 from pathlib import Path
+from ultralytics import YOLO
 
 
 class WasteDetector:
-    DEFAULT_MODEL = Path("model/best.pt")
+    YOLO_MODEL_PATH       = Path("model/best.pt")
+    CLASSIFIER_MODEL_PATH = Path("model/classifier.pt")
 
-    def __init__(self, model_path: str | Path = None, conf_threshold: float = 0.25):
-        self.model_path = Path(model_path) if model_path else self.DEFAULT_MODEL
+    # YOLO confidence kept very low — we only need rough box locations,
+    # the classifier re-scores each crop independently.
+    YOLO_CONF = 0.05
+
+    def __init__(self,
+                 model_path: str | Path = None,
+                 conf_threshold: float  = 0.10):
         self.conf_threshold = conf_threshold
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.model = self._load_model()
+        self.device         = "cuda" if torch.cuda.is_available() else "cpu"
 
-    def _load_model(self) -> YOLO:
-        if not self.model_path.exists():
+        # ── Load YOLO (localization) ──────────────────────────────────────
+        yolo_path = Path(model_path) if model_path else self.YOLO_MODEL_PATH
+        self._yolo = self._load_yolo(yolo_path)
+
+        # ── Load EfficientNet classifier (state classification) ───────────
+        self._clf = self._load_classifier()
+
+        if self._clf:
+            print(f"[Detector] Mode: two-stage  (YOLO location + classifier state)")
+        else:
+            print(f"[Detector] Mode: YOLO-only  (classifier not found — run train_classifier.py)")
+
+    # ── Loaders ──────────────────────────────────────────────────────────────
+
+    def _load_yolo(self, path: Path):
+        if not path.exists():
             raise FileNotFoundError(
-                f"Model not found at '{self.model_path}'.\n"
-                "Place your YOLOv8 weights at model/best.pt, or pass --model <path>.\n"
-                "To download a pretrained baseline: yolo export model=yolov8n.pt"
+                f"YOLO model not found at '{path}'.\n"
+                "Run:  python3 tools/train.py   OR   python3 setup_model.py --option 3"
             )
-        print(f"[Detector] Loading model from '{self.model_path}' on {self.device.upper()}")
-        model = YOLO(str(self.model_path))
-        model.to(self.device)
-        return model
+        print(f"[Detector] YOLO     : {path}  (device={self.device.upper()})")
+        m = YOLO(str(path))
+        m.to(self.device)
+        return m
 
-    def detect(self, frame):
-        """
-        Run inference on a single BGR frame (numpy array).
+    def _load_classifier(self):
+        try:
+            from src.classifier import BinClassifier
+            return BinClassifier(self.CLASSIFIER_MODEL_PATH)
+        except FileNotFoundError:
+            return None
 
-        Returns a list of dicts:
-            [{"label": str, "confidence": float, "box": [x1, y1, x2, y2]}, ...]
+    # ── Public API ────────────────────────────────────────────────────────────
+
+    def detect(self, frame: np.ndarray) -> list[dict]:
         """
-        results = self.model.predict(
-            source=frame,
-            conf=self.conf_threshold,
-            device=self.device,
-            verbose=False,
+        Run the full pipeline on a BGR frame.
+        Returns list of dicts:
+            [{"label": str, "confidence": float, "box": [x1,y1,x2,y2]}, ...]
+        """
+        if self._clf:
+            return self._two_stage(frame)
+        return self._yolo_only(frame)
+
+    # ── Two-stage pipeline ───────────────────────────────────────────────────
+
+    def _two_stage(self, frame: np.ndarray) -> list[dict]:
+        # Stage 1: YOLO at very low threshold to get bin regions
+        boxes = self._yolo_boxes(frame, conf=self.YOLO_CONF)
+
+        # Stage 2: Classify each crop; filter by user confidence threshold
+        raw = self._clf.classify_frame(frame, boxes if boxes else None)
+        return [d for d in raw if d["confidence"] >= self.conf_threshold]
+
+    def _yolo_boxes(self, frame: np.ndarray, conf: float) -> list[list[int]]:
+        results = self._yolo.predict(
+            source=frame, conf=conf, device=self.device, verbose=False
         )
+        boxes = []
+        for result in results:
+            for box in result.boxes:
+                x1, y1, x2, y2 = map(int, box.xyxy[0].tolist())
+                boxes.append([x1, y1, x2, y2])
+        return boxes
 
+    # ── YOLO-only fallback ───────────────────────────────────────────────────
+
+    def _yolo_only(self, frame: np.ndarray) -> list[dict]:
+        results = self._yolo.predict(
+            source=frame, conf=self.conf_threshold,
+            device=self.device, verbose=False
+        )
         detections = []
         for result in results:
             for box in result.boxes:
                 cls_id = int(box.cls[0])
-                label = self.model.names.get(cls_id, f"class_{cls_id}")
-                confidence = float(box.conf[0])
+                label  = self._yolo.names.get(cls_id, f"class_{cls_id}")
+                conf   = float(box.conf[0])
                 x1, y1, x2, y2 = map(int, box.xyxy[0].tolist())
                 detections.append({
-                    "label": label,
-                    "confidence": confidence,
-                    "box": [x1, y1, x2, y2],
+                    "label":      label,
+                    "confidence": conf,
+                    "box":        [x1, y1, x2, y2],
                 })
-
         return detections
