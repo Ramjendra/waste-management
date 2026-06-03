@@ -35,10 +35,11 @@ with st.sidebar:
     model_path  = st.text_input("Model path", value="model/best.pt")
     conf_thresh = st.slider("Confidence threshold", 0.10, 0.95, 0.25, 0.05)
     st.markdown("---")
-    st.markdown("**SLA thresholds**")
-    st.markdown(f"🟢 Pickup OK: conf ≥ {bl.HIGH_CONF}")
-    st.markdown(f"🟠 Warning:   conf ≥ {bl.MED_CONF}")
-    st.markdown(f"🔴 Review:    conf < {bl.MED_CONF}")
+    st.markdown("**SLA decision logic**")
+    st.markdown("🟢 **Empty bin** → No Action Required")
+    st.markdown("🔵 **Partial bin** → Pickup OK")
+    st.markdown("🟠 **Full bin** → Warning: Bin Full")
+    st.markdown("🔴 **Unknown / low conf** → Manual Review")
 
 
 # ── Model loader (cached per session) ─────────────────────────────────────────
@@ -66,8 +67,10 @@ def process_frame(detector: WasteDetector, frame: np.ndarray):
 # ── Decision card helper ───────────────────────────────────────────────────────
 def _render_decision_card(decision: bl.Decision):
     color_map = {
-        bl.Status.OK:      "success",
-        bl.Status.WARNING: "warning",
+        bl.Status.NO_BINS: "info",
+        bl.Status.EMPTY:   "success",
+        bl.Status.PARTIAL: "success",
+        bl.Status.FULL:    "warning",
         bl.Status.REVIEW:  "error",
     }
     render = getattr(st, color_map[decision.status])
