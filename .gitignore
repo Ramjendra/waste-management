@@ -3,12 +3,7 @@ model/best.pt
 *.pt
 *.pth
 
-# Downloaded / generated data
-data/raw/
-data/labels/
-data/dataset/
-
-# Training runs output
+# Training runs output (large artefacts)
 runs/
 
 # Python
