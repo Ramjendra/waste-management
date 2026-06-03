@@ -165,7 +165,7 @@ with tab_image:
 
 # ── Tab 2: Video File ──────────────────────────────────────────────────────────
 with tab_video:
-    st.subheader("Upload a video for offline processing")
+    st.subheader("Upload a video for bin state detection")
     video_file = st.file_uploader("Choose a video", type=["mp4", "avi", "mov", "mkv"])
 
     if video_file:
@@ -177,14 +177,26 @@ with tab_video:
 
             cap = cv2.VideoCapture(tmp_path)
             total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-            fps          = cap.get(cv2.CAP_PROP_FPS) or 25
+            fps          = max(cap.get(cv2.CAP_PROP_FPS), 1)
 
-            st.info(f"Video: {total_frames} frames @ {fps:.1f} fps")
+            col_info1, col_info2, col_info3 = st.columns(3)
+            col_info1.metric("Total Frames", total_frames)
+            col_info2.metric("FPS", f"{fps:.1f}")
+            col_info3.metric("Duration", f"{total_frames / fps:.1f}s")
 
-            frame_placeholder    = st.empty()
-            decision_placeholder = st.empty()
-            progress  = st.progress(0)
-            stop_btn  = st.button("⏹ Stop")
+            # Full-width annotated video feed
+            frame_placeholder = st.empty()
+
+            # Status bar below the video
+            col_status, col_conf, col_count = st.columns(3)
+            status_box = col_status.empty()
+            conf_box   = col_conf.empty()
+            count_box  = col_count.empty()
+
+            progress = st.progress(0)
+
+            col_btn1, col_btn2 = st.columns([1, 5])
+            stop_btn = col_btn1.button("⏹ Stop")
 
             frame_idx = 0
             while cap.isOpened() and not stop_btn:
@@ -192,22 +204,27 @@ with tab_video:
                 if not ret:
                     break
 
-                annotated, decision, _ = process_frame(detector, frame)
+                annotated, decision, detections = process_frame(detector, frame)
+
+                # Show annotated frame full width
                 frame_placeholder.image(
                     cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB),
                     use_container_width=True,
+                    caption=f"Frame {frame_idx + 1} / {total_frames}",
                 )
-                decision_placeholder.info(
-                    f"Frame {frame_idx + 1}/{total_frames}  —  **{decision.status.value}**  "
-                    f"| Detections: {decision.detection_count}  "
-                    f"| Max conf: {decision.max_confidence:.2f}"
-                )
+
+                # Live metrics below
+                status_box.metric("Status",      decision.status.value)
+                conf_box.metric("Max Conf",      f"{decision.max_confidence:.2f}")
+                count_box.metric("Bins in Frame", decision.detection_count)
+
                 progress.progress(min((frame_idx + 1) / max(total_frames, 1), 1.0))
                 frame_idx += 1
                 time.sleep(1.0 / fps)
 
             cap.release()
-            st.success("Video processing complete." if not stop_btn else "Stopped.")
+            if not stop_btn:
+                st.success(f"Done — processed {frame_idx} frames.")
 
 
 # ── Tab 3: Webcam ──────────────────────────────────────────────────────────────
