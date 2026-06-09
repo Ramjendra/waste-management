@@ -165,66 +165,109 @@ with tab_image:
 
 # ── Tab 2: Video File ──────────────────────────────────────────────────────────
 with tab_video:
-    st.subheader("Upload a video for bin state detection")
-    video_file = st.file_uploader("Choose a video", type=["mp4", "avi", "mov", "mkv"])
+    st.subheader("Offline Video — Bin Detection")
+    video_file = st.file_uploader("Upload a video", type=["mp4", "avi", "mov", "mkv"])
 
     if video_file:
         detector = get_detector()
         if detector:
-            with tempfile.NamedTemporaryFile(suffix=Path(video_file.name).suffix, delete=False) as tmp:
-                tmp.write(video_file.read())
-                tmp_path = tmp.name
+            # Save upload to a temp file
+            suffix = Path(video_file.name).suffix
+            tmp_in  = tempfile.NamedTemporaryFile(suffix=suffix,        delete=False)
+            tmp_out = tempfile.NamedTemporaryFile(suffix=".mp4",        delete=False)
+            tmp_in.write(video_file.read())
+            tmp_in.flush()
+            input_path  = tmp_in.name
+            output_path = tmp_out.name
+            tmp_in.close()
+            tmp_out.close()
 
-            cap = cv2.VideoCapture(tmp_path)
+            # Read video metadata
+            cap = cv2.VideoCapture(input_path)
             total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
             fps          = max(cap.get(cv2.CAP_PROP_FPS), 1)
+            cap.release()
 
-            col_info1, col_info2, col_info3 = st.columns(3)
-            col_info1.metric("Total Frames", total_frames)
-            col_info2.metric("FPS", f"{fps:.1f}")
-            col_info3.metric("Duration", f"{total_frames / fps:.1f}s")
+            # Video info row
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Frames",   total_frames)
+            c2.metric("FPS",      f"{fps:.1f}")
+            c3.metric("Duration", f"{total_frames / fps:.1f}s")
 
-            # Full-width annotated video feed
-            frame_placeholder = st.empty()
+            # Frame-skip control — speeds up processing on long videos
+            frame_skip = st.select_slider(
+                "Process every N-th frame",
+                options=[1, 2, 3, 5, 10],
+                value=1,
+                help="1 = every frame (best quality). Higher = faster processing.",
+            )
 
-            # Status bar below the video
-            col_status, col_conf, col_count = st.columns(3)
-            status_box = col_status.empty()
-            conf_box   = col_conf.empty()
-            count_box  = col_count.empty()
+            if st.button("▶ Process Video"):
+                progress_bar  = st.progress(0, text="Processing…")
+                status_text   = st.empty()
 
-            progress = st.progress(0)
+                from src.processor import VideoProcessor
 
-            col_btn1, col_btn2 = st.columns([1, 5])
-            stop_btn = col_btn1.button("⏹ Stop")
+                def _progress(frame_idx, total):
+                    pct = min((frame_idx + 1) / max(total, 1), 1.0)
+                    progress_bar.progress(pct,
+                        text=f"Processing frame {frame_idx + 1} / {total}")
 
-            frame_idx = 0
-            while cap.isOpened() and not stop_btn:
-                ret, frame = cap.read()
-                if not ret:
-                    break
-
-                annotated, decision, detections = process_frame(detector, frame)
-
-                # Show annotated frame full width
-                frame_placeholder.image(
-                    cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB),
-                    use_container_width=True,
-                    caption=f"Frame {frame_idx + 1} / {total_frames}",
+                proc = VideoProcessor(detector, show_window=False)
+                out_path, log = proc.process_video_file(
+                    input_path  = input_path,
+                    output_path = output_path,
+                    frame_skip  = frame_skip,
+                    progress_cb = _progress,
                 )
 
-                # Live metrics below
-                status_box.metric("Status",      decision.status.value)
-                conf_box.metric("Max Conf",      f"{decision.max_confidence:.2f}")
-                count_box.metric("Bins in Frame", decision.detection_count)
+                progress_bar.progress(1.0, text="Done!")
+                st.success(f"Processed {len(log)} frames.")
 
-                progress.progress(min((frame_idx + 1) / max(total_frames, 1), 1.0))
-                frame_idx += 1
-                time.sleep(1.0 / fps)
+                # ── Play annotated video ──────────────────────────────────
+                st.markdown("### Annotated Output")
+                with open(out_path, "rb") as f:
+                    st.video(f.read())
 
-            cap.release()
-            if not stop_btn:
-                st.success(f"Done — processed {frame_idx} frames.")
+                # ── Detection summary table ───────────────────────────────
+                st.markdown("### Frame-by-Frame Detection Log")
+
+                # Summarise: show only frames that have detections
+                detected_log = [r for r in log if r["detections"] > 0]
+
+                if detected_log:
+                    col_f, col_s, col_d, col_c, col_l = st.columns([1, 2, 1, 1, 3])
+                    col_f.markdown("**Frame**")
+                    col_s.markdown("**Status**")
+                    col_d.markdown("**Bins**")
+                    col_c.markdown("**Conf**")
+                    col_l.markdown("**Labels**")
+
+                    for row in detected_log:
+                        col_f.write(row["frame"])
+                        col_s.write(row["status"])
+                        col_d.write(row["detections"])
+                        col_c.write(f"{row['max_conf']:.2f}")
+                        col_l.write(", ".join(row["labels"]) or "—")
+                else:
+                    st.warning(
+                        "No bins detected in any frame.  \n"
+                        "Lower the **Confidence threshold** slider in the sidebar and try again."
+                    )
+
+                # ── Summary stats ─────────────────────────────────────────
+                if log:
+                    st.markdown("### Summary")
+                    from collections import Counter
+                    status_counts = Counter(r["status"] for r in log)
+                    sc1, sc2, sc3, sc4 = st.columns(4)
+                    sc1.metric("Total Frames Analysed", len(log))
+                    sc2.metric("Frames with Bins",      len(detected_log))
+                    sc3.metric("Most Common Status",
+                               max(status_counts, key=status_counts.get))
+                    avg_conf = (sum(r["max_conf"] for r in detected_log) /
+                                max(len(detected_log), 1))
+                    sc4.metric("Avg Confidence", f"{avg_conf:.2f}")
 
 
 # ── Tab 3: Webcam ──────────────────────────────────────────────────────────────
