@@ -163,111 +163,192 @@ with tab_image:
             _render_decision_card(decision, detections, detector, frame)
 
 
+# ── helpers ────────────────────────────────────────────────────────────────────
+import subprocess, shutil as _shutil
+from collections import Counter
+
+def _to_h264(src: str, dst: str) -> bool:
+    """Re-encode src → dst with H.264 using ffmpeg. Returns True on success."""
+    if not _shutil.which("ffmpeg"):
+        return False
+    try:
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", src,
+             "-vcodec", "libx264", "-crf", "23",
+             "-pix_fmt", "yuv420p", dst],
+            check=True, capture_output=True,
+        )
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+
+def _key_frames(input_path: str, log: list[dict],
+                detector, max_show: int = 6) -> list[tuple]:
+    """Extract up to max_show annotated key frames that had detections."""
+    detected = [r for r in log if r["detections"] > 0]
+    if not detected:
+        return []
+    # Pick evenly spaced frames
+    step    = max(1, len(detected) // max_show)
+    chosen  = detected[::step][:max_show]
+    frames  = []
+    cap     = cv2.VideoCapture(input_path)
+    for row in chosen:
+        cap.set(cv2.CAP_PROP_POS_FRAMES, row["frame"])
+        ret, frame = cap.read()
+        if not ret:
+            continue
+        detections = detector.detect(frame)
+        decision   = bl.evaluate(detections)
+        annotated  = annotate(frame.copy(), detections, decision)
+        frames.append((row["frame"], cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB),
+                       row["status"]))
+    cap.release()
+    return frames
+
+
 # ── Tab 2: Video File ──────────────────────────────────────────────────────────
 with tab_video:
     st.subheader("Offline Video — Bin Detection")
-    video_file = st.file_uploader("Upload a video", type=["mp4", "avi", "mov", "mkv"])
+    video_file = st.file_uploader(
+        "Upload your video",
+        type=["mp4", "avi", "mov", "mkv", "MP4", "AVI", "MOV"],
+        help="Upload any bin footage — the system will detect empty / partial / full bins in every frame.",
+    )
 
     if video_file:
         detector = get_detector()
         if detector:
-            # Save upload to a temp file
-            suffix = Path(video_file.name).suffix
-            tmp_in  = tempfile.NamedTemporaryFile(suffix=suffix,        delete=False)
-            tmp_out = tempfile.NamedTemporaryFile(suffix=".mp4",        delete=False)
+            # ── Save uploaded file ────────────────────────────────────────
+            suffix  = Path(video_file.name).suffix or ".mp4"
+            tmp_in  = tempfile.NamedTemporaryFile(suffix=suffix,  delete=False)
+            tmp_raw = tempfile.NamedTemporaryFile(suffix=".mp4",  delete=False)
+            tmp_h264= tempfile.NamedTemporaryFile(suffix=".mp4",  delete=False)
             tmp_in.write(video_file.read())
-            tmp_in.flush()
-            input_path  = tmp_in.name
-            output_path = tmp_out.name
-            tmp_in.close()
-            tmp_out.close()
+            tmp_in.flush(); tmp_in.close()
+            tmp_raw.close(); tmp_h264.close()
 
-            # Read video metadata
-            cap = cv2.VideoCapture(input_path)
+            input_path   = tmp_in.name
+            raw_out_path = tmp_raw.name
+            h264_path    = tmp_h264.name
+
+            # ── Video metadata ────────────────────────────────────────────
+            cap          = cv2.VideoCapture(input_path)
             total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
             fps          = max(cap.get(cv2.CAP_PROP_FPS), 1)
+            width        = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            height       = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
             cap.release()
 
-            # Video info row
-            c1, c2, c3 = st.columns(3)
-            c1.metric("Frames",   total_frames)
-            c2.metric("FPS",      f"{fps:.1f}")
-            c3.metric("Duration", f"{total_frames / fps:.1f}s")
+            c1, c2, c3, c4 = st.columns(4)
+            c1.metric("Frames",     total_frames)
+            c2.metric("FPS",        f"{fps:.1f}")
+            c3.metric("Duration",   f"{total_frames / fps:.1f}s")
+            c4.metric("Resolution", f"{width}×{height}")
 
-            # Frame-skip control — speeds up processing on long videos
             frame_skip = st.select_slider(
                 "Process every N-th frame",
-                options=[1, 2, 3, 5, 10],
-                value=1,
-                help="1 = every frame (best quality). Higher = faster processing.",
+                options=[1, 2, 3, 5, 10], value=2,
+                help="1 = every frame (slow but most accurate). 2-3 = good balance.",
             )
 
-            if st.button("▶ Process Video"):
-                progress_bar  = st.progress(0, text="Processing…")
-                status_text   = st.empty()
+            st.caption(
+                f"Estimated frames to analyse: **{total_frames // frame_skip}**  "
+                f"— GPU inference ~0.05s/frame"
+            )
+
+            if st.button("▶ Process Video", type="primary"):
+
+                # ── Processing ────────────────────────────────────────────
+                prog  = st.progress(0, text="Starting…")
+                info  = st.empty()
 
                 from src.processor import VideoProcessor
 
-                def _progress(frame_idx, total):
-                    pct = min((frame_idx + 1) / max(total, 1), 1.0)
-                    progress_bar.progress(pct,
-                        text=f"Processing frame {frame_idx + 1} / {total}")
+                def _cb(idx, total):
+                    pct = min((idx + 1) / max(total, 1), 1.0)
+                    prog.progress(pct,
+                        text=f"Analysing frame {idx + 1} / {total} …")
 
                 proc = VideoProcessor(detector, show_window=False)
-                out_path, log = proc.process_video_file(
+                raw_path, log = proc.process_video_file(
                     input_path  = input_path,
-                    output_path = output_path,
+                    output_path = raw_out_path,
                     frame_skip  = frame_skip,
-                    progress_cb = _progress,
+                    progress_cb = _cb,
+                )
+                prog.progress(1.0, text="Detection done — encoding video…")
+
+                # ── Re-encode to H.264 for browser playback ───────────────
+                use_h264 = _to_h264(raw_path, h264_path)
+                playback_path = h264_path if use_h264 else raw_path
+                prog.empty()
+
+                detected_log = [r for r in log if r["detections"] > 0]
+                st.success(
+                    f"Done — {len(log)} frames analysed, "
+                    f"**{len(detected_log)}** frames had bin detections."
                 )
 
-                progress_bar.progress(1.0, text="Done!")
-                st.success(f"Processed {len(log)} frames.")
+                # ── Annotated video player ────────────────────────────────
+                st.markdown("---")
+                st.markdown("### Annotated Video")
+                with open(playback_path, "rb") as f:
+                    video_bytes = f.read()
+                st.video(video_bytes)
 
-                # ── Play annotated video ──────────────────────────────────
-                st.markdown("### Annotated Output")
-                with open(out_path, "rb") as f:
-                    st.video(f.read())
+                # Download button (always available even if player fails)
+                st.download_button(
+                    label="⬇ Download Annotated Video",
+                    data=video_bytes,
+                    file_name=f"{Path(video_file.name).stem}_detected.mp4",
+                    mime="video/mp4",
+                )
 
-                # ── Detection summary table ───────────────────────────────
+                # ── Key frame preview grid ────────────────────────────────
+                st.markdown("---")
+                st.markdown("### Key Frames with Detections")
+                kf = _key_frames(input_path, log, detector, max_show=6)
+                if kf:
+                    cols = st.columns(min(len(kf), 3))
+                    for i, (fno, img, status) in enumerate(kf):
+                        with cols[i % 3]:
+                            st.image(img, use_container_width=True,
+                                     caption=f"Frame {fno} — {status}")
+                else:
+                    st.info("No frames with bin detections to preview.")
+
+                # ── Detection log table ───────────────────────────────────
+                st.markdown("---")
                 st.markdown("### Frame-by-Frame Detection Log")
-
-                # Summarise: show only frames that have detections
-                detected_log = [r for r in log if r["detections"] > 0]
-
                 if detected_log:
-                    col_f, col_s, col_d, col_c, col_l = st.columns([1, 2, 1, 1, 3])
-                    col_f.markdown("**Frame**")
-                    col_s.markdown("**Status**")
-                    col_d.markdown("**Bins**")
-                    col_c.markdown("**Conf**")
-                    col_l.markdown("**Labels**")
-
-                    for row in detected_log:
-                        col_f.write(row["frame"])
-                        col_s.write(row["status"])
-                        col_d.write(row["detections"])
-                        col_c.write(f"{row['max_conf']:.2f}")
-                        col_l.write(", ".join(row["labels"]) or "—")
+                    import pandas as pd
+                    df = pd.DataFrame(detected_log)[
+                        ["frame", "status", "detections", "max_conf", "labels"]
+                    ]
+                    df["labels"] = df["labels"].apply(lambda x: ", ".join(x) if x else "—")
+                    df.columns   = ["Frame", "Status", "Bins", "Max Conf", "Labels"]
+                    st.dataframe(df, use_container_width=True, height=300)
                 else:
                     st.warning(
                         "No bins detected in any frame.  \n"
-                        "Lower the **Confidence threshold** slider in the sidebar and try again."
+                        "Try lowering the **Confidence threshold** slider (sidebar) to 0.05."
                     )
 
-                # ── Summary stats ─────────────────────────────────────────
-                if log:
-                    st.markdown("### Summary")
-                    from collections import Counter
-                    status_counts = Counter(r["status"] for r in log)
-                    sc1, sc2, sc3, sc4 = st.columns(4)
-                    sc1.metric("Total Frames Analysed", len(log))
-                    sc2.metric("Frames with Bins",      len(detected_log))
-                    sc3.metric("Most Common Status",
-                               max(status_counts, key=status_counts.get))
-                    avg_conf = (sum(r["max_conf"] for r in detected_log) /
-                                max(len(detected_log), 1))
-                    sc4.metric("Avg Confidence", f"{avg_conf:.2f}")
+                # ── Summary metrics ───────────────────────────────────────
+                st.markdown("---")
+                st.markdown("### Summary")
+                status_counts = Counter(r["status"] for r in log)
+                sm1, sm2, sm3, sm4 = st.columns(4)
+                sm1.metric("Frames Analysed",  len(log))
+                sm2.metric("Frames with Bins", len(detected_log))
+                sm3.metric("Most Common Status",
+                           max(status_counts, key=status_counts.get)
+                           if status_counts else "—")
+                avg_conf = (sum(r["max_conf"] for r in detected_log) /
+                            max(len(detected_log), 1))
+                sm4.metric("Avg Confidence",   f"{avg_conf:.2f}")
 
 
 # ── Tab 3: Webcam ──────────────────────────────────────────────────────────────
