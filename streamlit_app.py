@@ -45,6 +45,28 @@ with st.sidebar:
     st.markdown("🟠 **Full bin** → Warning: Bin Full")
     st.markdown("🔴 **Unknown / low conf** → Manual Review")
     st.markdown("---")
+    st.markdown("**Model Setup**")
+    model_exists = Path("model/best.pt").exists()
+    clf_exists   = Path("model/classifier.pt").exists()
+    st.markdown(f"{'✅' if model_exists else '❌'} model/best.pt")
+    st.markdown(f"{'✅' if clf_exists   else '❌'} model/classifier.pt")
+
+    if not model_exists or not clf_exists:
+        if st.button("⬇ Download / Setup Models", type="secondary"):
+            with st.spinner("Setting up models…"):
+                import subprocess
+                result = subprocess.run(
+                    ["python3", "tools/setup_model.py"],
+                    capture_output=True, text=True
+                )
+            if result.returncode == 0:
+                st.success("Models ready! Reload the page.")
+                st.code(result.stdout[-800:] if len(result.stdout) > 800 else result.stdout)
+            else:
+                st.error("Setup failed — see error below.")
+                st.code(result.stderr[-800:])
+
+    st.markdown("---")
     st.caption("Tip: if nothing is detected, lower the confidence slider.")
 
 
@@ -57,12 +79,12 @@ def load_detector(path: str, conf: float) -> WasteDetector:
 def get_detector() -> WasteDetector | None:
     try:
         d = load_detector(model_path, conf_thresh)
-        if not Path(model_path).exists():
+        if getattr(d, "_using_fallback", False):
             st.warning(
-                "⚠️ **model/best.pt not found** — using base YOLOv8n (untrained).  \n"
-                "Detection results will be poor until you train:  \n"
-                "`python3 tools/train.py` then `python3 tools/train_classifier.py`  \n"
-                "Or on GPU server: `./train_gpu.sh`"
+                "⚠️ **model/best.pt not found** — running on base YOLOv8n (not trained for bins).  \n"
+                "Results will be generic until you train. Quick fix:  \n"
+                "`python3 tools/setup_model.py`  then  `python3 tools/train_classifier.py --epochs 60`  \n"
+                "Full GPU training:  `./train_gpu.sh`"
             )
         return d
     except Exception as e:

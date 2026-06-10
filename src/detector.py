@@ -29,8 +29,9 @@ class WasteDetector:
     def __init__(self,
                  model_path: str | Path = None,
                  conf_threshold: float  = 0.10):
-        self.conf_threshold = conf_threshold
-        self.device         = "cuda" if torch.cuda.is_available() else "cpu"
+        self.conf_threshold  = conf_threshold
+        self.device          = "cuda" if torch.cuda.is_available() else "cpu"
+        self._using_fallback = False
 
         # ── Load YOLO (localization) ──────────────────────────────────────
         yolo_path = Path(model_path) if model_path else self.YOLO_MODEL_PATH
@@ -47,18 +48,25 @@ class WasteDetector:
     # ── Loaders ──────────────────────────────────────────────────────────────
 
     def _load_yolo(self, path: Path):
-        if not path.exists():
-            # Fall back to base YOLOv8n — downloads automatically, works without training
-            fallback = Path("yolov8n.pt")
-            print(f"[Detector] WARNING: '{path}' not found — using base yolov8n.pt (untrained)")
-            print(f"[Detector] Train your own model:  python3 tools/train.py")
-            m = YOLO(str(fallback))
-            m.to(self.device)
-            self.model_path = str(fallback)
-            return m
-        print(f"[Detector] YOLO     : {path}  (device={self.device.upper()})")
-        m = YOLO(str(path))
+        # Priority: trained model → cached yolov8n.pt → auto-download yolov8n.pt
+        candidates = [path, Path("yolov8n.pt")]
+        for candidate in candidates:
+            if candidate.exists():
+                tag = "trained" if candidate == path else "base-fallback"
+                print(f"[Detector] YOLO ({tag}): {candidate}  (device={self.device.upper()})")
+                m = YOLO(str(candidate))
+                m.to(self.device)
+                self.model_path = str(candidate)
+                self._using_fallback = (candidate != path)
+                return m
+
+        # Neither exists — let ultralytics auto-download yolov8n.pt
+        print(f"[Detector] '{path}' not found — auto-downloading yolov8n.pt …")
+        print(f"[Detector] To train your own model: python3 tools/train.py")
+        m = YOLO("yolov8n.pt")
         m.to(self.device)
+        self.model_path = "yolov8n.pt"
+        self._using_fallback = True
         return m
 
     def _load_classifier(self):
