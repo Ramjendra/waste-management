@@ -56,8 +56,16 @@ def load_detector(path: str, conf: float) -> WasteDetector:
 
 def get_detector() -> WasteDetector | None:
     try:
-        return load_detector(model_path, conf_thresh)
-    except FileNotFoundError as e:
+        d = load_detector(model_path, conf_thresh)
+        if not Path(model_path).exists():
+            st.warning(
+                "⚠️ **model/best.pt not found** — using base YOLOv8n (untrained).  \n"
+                "Detection results will be poor until you train:  \n"
+                "`python3 tools/train.py` then `python3 tools/train_classifier.py`  \n"
+                "Or on GPU server: `./train_gpu.sh`"
+            )
+        return d
+    except Exception as e:
         st.error(str(e))
         return None
 

@@ -48,10 +48,14 @@ class WasteDetector:
 
     def _load_yolo(self, path: Path):
         if not path.exists():
-            raise FileNotFoundError(
-                f"YOLO model not found at '{path}'.\n"
-                "Run:  python3 tools/train.py   OR   python3 setup_model.py --option 3"
-            )
+            # Fall back to base YOLOv8n — downloads automatically, works without training
+            fallback = Path("yolov8n.pt")
+            print(f"[Detector] WARNING: '{path}' not found — using base yolov8n.pt (untrained)")
+            print(f"[Detector] Train your own model:  python3 tools/train.py")
+            m = YOLO(str(fallback))
+            m.to(self.device)
+            self.model_path = str(fallback)
+            return m
         print(f"[Detector] YOLO     : {path}  (device={self.device.upper()})")
         m = YOLO(str(path))
         m.to(self.device)
