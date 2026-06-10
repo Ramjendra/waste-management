@@ -165,6 +165,34 @@ def _render_decision_card(decision: bl.Decision, detections: list[dict],
             st.markdown("- Re-train with more images: `python3 tools/train.py --epochs 150`")
 
 
+# ── Shared status banner ──────────────────────────────────────────────────────
+_BANNER_STYLE = {
+    bl.Status.FULL.value:    ("🔴", "#FF4444", "WARNING: BIN FULL"),
+    bl.Status.PARTIAL.value: ("🟡", "#F59E0B", "PICKUP OK"),
+    bl.Status.EMPTY.value:   ("🟢", "#22C55E", "NO ACTION REQUIRED"),
+    bl.Status.REVIEW.value:  ("🟠", "#EF4444", "MANUAL REVIEW REQUIRED"),
+    bl.Status.NO_BINS.value: ("⚪", "#6B7280", "NO BINS DETECTED"),
+}
+
+def _render_status_banner(status_value: str, subtitle: str = ""):
+    icon, bg, label = _BANNER_STYLE.get(status_value, ("⚪", "#6B7280", status_value))
+    st.markdown(
+        f"""
+        <div style="
+            background:{bg}; color:white;
+            padding:28px 32px; border-radius:16px;
+            text-align:center; margin:16px 0;
+            box-shadow:0 4px 16px rgba(0,0,0,0.18);
+        ">
+            <div style="font-size:3.2rem; margin-bottom:8px;">{icon}</div>
+            <div style="font-size:2rem; font-weight:900; letter-spacing:2px;">{label}</div>
+            {f'<div style="font-size:1rem; margin-top:10px; opacity:0.92;">{subtitle}</div>' if subtitle else ''}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 # ── Tabs ───────────────────────────────────────────────────────────────────────
 tab_image, tab_video, tab_webcam = st.tabs(["🖼️ Image", "🎞️ Video File", "📷 Webcam"])
 
@@ -183,6 +211,17 @@ with tab_image:
             annotated, decision, detections = process_frame(detector, frame)
             annotated_rgb = cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB)
 
+            # ── Final status banner ───────────────────────────────────────
+            st.markdown("## 📊 Analysis Result")
+            bins_info = (
+                f"Bins detected: {decision.detection_count}  |  "
+                f"Max confidence: {decision.max_confidence:.2f}  |  "
+                f"Labels: {', '.join(decision.labels) or 'none'}"
+            )
+            _render_status_banner(decision.status.value, bins_info)
+
+            # ── Side-by-side images ───────────────────────────────────────
+            st.markdown("---")
             col_orig, col_result = st.columns(2)
             with col_orig:
                 st.image(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB),
@@ -340,37 +379,9 @@ with tab_video:
                 # ── Big status banner ─────────────────────────────────────
                 st.markdown("---")
                 st.markdown("## 📊 Final Video Analysis Result")
-
-                _banner_style = {
-                    bl.Status.FULL.value:    ("🔴", "#FF4444", "white", "WARNING: BIN FULL"),
-                    bl.Status.PARTIAL.value: ("🟡", "#F59E0B", "white", "PICKUP OK"),
-                    bl.Status.EMPTY.value:   ("🟢", "#22C55E", "white", "NO ACTION REQUIRED"),
-                    bl.Status.REVIEW.value:  ("🟠", "#EF4444", "white", "MANUAL REVIEW REQUIRED"),
-                    bl.Status.NO_BINS.value: ("⚪", "#6B7280", "white", "NO BINS DETECTED"),
-                }
-                icon, bg, fg, label = _banner_style.get(
+                _render_status_banner(
                     final_status,
-                    ("⚪", "#6B7280", "white", final_status)
-                )
-
-                st.markdown(
-                    f"""
-                    <div style="
-                        background:{bg}; color:{fg};
-                        padding: 28px 32px; border-radius: 16px;
-                        text-align: center; margin-bottom: 16px;
-                        box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-                    ">
-                        <div style="font-size:3.5rem; margin-bottom:8px;">{icon}</div>
-                        <div style="font-size:2rem; font-weight:900; letter-spacing:2px;">
-                            {label}
-                        </div>
-                        <div style="font-size:1rem; margin-top:10px; opacity:0.92;">
-                            Overall status across <b>{total_analysed}</b> frames analysed
-                        </div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
+                    f"Overall status across <b>{total_analysed}</b> frames analysed"
                 )
 
                 # Breakdown row
@@ -467,6 +478,15 @@ with tab_webcam:
 
             annotated, decision, detections = process_frame(detector, frame)
 
+            # ── Status banner ─────────────────────────────────────────────
+            st.markdown("## 📊 Snapshot Result")
+            _render_status_banner(
+                decision.status.value,
+                f"Bins detected: {decision.detection_count}  |  "
+                f"Max confidence: {decision.max_confidence:.2f}"
+            )
+
+            st.markdown("---")
             st.image(
                 cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB),
                 caption="Detection result",
