@@ -26,13 +26,14 @@ st.set_page_config(
 )
 
 st.title("♻️ Real-Time Waste Detection System")
-st.markdown("Powered by **YOLOv8** · Upload a file or start your webcam to begin.")
+st.markdown("Upload a file or start your webcam to begin.")
 
 
 # ── Sidebar — model settings ───────────────────────────────────────────────────
+model_path = "model/best.pt"
+
 with st.sidebar:
     st.header("⚙️ Settings")
-    model_path  = st.text_input("Model path", value="model/best.pt")
 
     # Default 0.10 — freshly trained models often score below 0.25
     conf_thresh = st.slider("Confidence threshold", 0.01, 0.95, 0.10, 0.01,
