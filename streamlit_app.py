@@ -316,8 +316,76 @@ with tab_video:
                 prog.empty()
 
                 detected_log = [r for r in log if r["detections"] > 0]
+
+                # ── Final overall status ───────────────────────────────────
+                # Most severe status seen across all frames
+                _sev_order = [
+                    bl.Status.NO_BINS.value, bl.Status.EMPTY.value,
+                    bl.Status.PARTIAL.value, bl.Status.REVIEW.value,
+                    bl.Status.FULL.value,
+                ]
+                status_counts = Counter(r["status"] for r in log)
+
+                final_status = max(
+                    status_counts.keys(),
+                    key=lambda s: _sev_order.index(s) if s in _sev_order else 0
+                ) if status_counts else bl.Status.NO_BINS.value
+
+                empty_frames   = status_counts.get(bl.Status.EMPTY.value,   0)
+                partial_frames = status_counts.get(bl.Status.PARTIAL.value, 0)
+                full_frames    = status_counts.get(bl.Status.FULL.value,    0)
+                no_bin_frames  = status_counts.get(bl.Status.NO_BINS.value, 0)
+                total_analysed = len(log)
+
+                # ── Big status banner ─────────────────────────────────────
+                st.markdown("---")
+                st.markdown("## 📊 Final Video Analysis Result")
+
+                _banner_style = {
+                    bl.Status.FULL.value:    ("🔴", "#FF4444", "white", "WARNING: BIN FULL"),
+                    bl.Status.PARTIAL.value: ("🟡", "#F59E0B", "white", "PICKUP OK"),
+                    bl.Status.EMPTY.value:   ("🟢", "#22C55E", "white", "NO ACTION REQUIRED"),
+                    bl.Status.REVIEW.value:  ("🟠", "#EF4444", "white", "MANUAL REVIEW REQUIRED"),
+                    bl.Status.NO_BINS.value: ("⚪", "#6B7280", "white", "NO BINS DETECTED"),
+                }
+                icon, bg, fg, label = _banner_style.get(
+                    final_status,
+                    ("⚪", "#6B7280", "white", final_status)
+                )
+
+                st.markdown(
+                    f"""
+                    <div style="
+                        background:{bg}; color:{fg};
+                        padding: 28px 32px; border-radius: 16px;
+                        text-align: center; margin-bottom: 16px;
+                        box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+                    ">
+                        <div style="font-size:3.5rem; margin-bottom:8px;">{icon}</div>
+                        <div style="font-size:2rem; font-weight:900; letter-spacing:2px;">
+                            {label}
+                        </div>
+                        <div style="font-size:1rem; margin-top:10px; opacity:0.92;">
+                            Overall status across <b>{total_analysed}</b> frames analysed
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+                # Breakdown row
+                bc1, bc2, bc3, bc4 = st.columns(4)
+                bc1.metric("🔴 Full Frames",    full_frames,
+                           f"{full_frames/max(total_analysed,1)*100:.0f}%")
+                bc2.metric("🟡 Partial Frames", partial_frames,
+                           f"{partial_frames/max(total_analysed,1)*100:.0f}%")
+                bc3.metric("🟢 Empty Frames",   empty_frames,
+                           f"{empty_frames/max(total_analysed,1)*100:.0f}%")
+                bc4.metric("⚪ No Bin Frames",  no_bin_frames,
+                           f"{no_bin_frames/max(total_analysed,1)*100:.0f}%")
+
                 st.success(
-                    f"Done — {len(log)} frames analysed, "
+                    f"Processing done — {total_analysed} frames analysed, "
                     f"**{len(detected_log)}** frames had bin detections."
                 )
 
