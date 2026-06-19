@@ -1,0 +1,298 @@
+<mxfile host="app.diagrams.net" agent="SHARP-EV-SA">
+  <diagram name="SHARP EV Simple Overview" id="sharp-ev-simple">
+    <mxGraphModel dx="1589" dy="697" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1660" pageHeight="640" math="0" shadow="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#1F497D;" value="SHARP EV AIチャットボット　—　How It Works" vertex="1">
+          <mxGeometry height="38" width="1540" x="50" y="14" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=13;fontStyle=2;fontColor=#888888;" value="あなたの質問　→　AWS クラウド　→　AIが回答" vertex="1">
+          <mxGeometry height="22" width="1540" x="50" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="4" parent="1" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#333333;fontSize=10;fontStyle=0;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="315" width="268" x="55" y="85" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=#1565C0;fontColor=#FFFFFF;fontSize=13;fontStyle=1;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="50" width="268" x="55" y="85" as="geometry" />
+        </mxCell>
+        <mxCell id="6" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#ffffff;strokeWidth=3;fontColor=#FFFFFF;fontSize=20;fontStyle=1;verticalAlign=middle;" value="1" vertex="1">
+          <mxGeometry height="36" width="36" x="63" y="93" as="geometry" />
+        </mxCell>
+        <mxCell id="7" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#FFFFFF;" value="あなたとEV車" vertex="1">
+          <mxGeometry height="36" width="208" x="107" y="93" as="geometry" />
+        </mxCell>
+        <mxCell id="8" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#8C4FFF;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.iot_core;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="72" width="72" x="107" y="147" as="geometry" />
+        </mxCell>
+        <mxCell id="9" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#DD344C;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cognito;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="72" width="72" x="199" y="147" as="geometry" />
+        </mxCell>
+        <mxCell id="10" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=10;fontStyle=2;fontColor=#1565C0;" value="Your EV &amp; You" vertex="1">
+          <mxGeometry height="22" width="248" x="65" y="233" as="geometry" />
+        </mxCell>
+        <mxCell id="11" parent="1" style="line;strokeColor=#1565C0;fillColor=none;strokeWidth=1;opacity=40;" value="" vertex="1">
+          <mxGeometry height="2" width="228" x="75" y="257" as="geometry" />
+        </mxCell>
+        <mxCell id="12" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=12;fontStyle=0;fontColor=#1565C0;" value="車のセンサーが自動で&#xa;クラウドに送信" vertex="1">
+          <mxGeometry height="55" width="248" x="65" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="13" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=9;fontStyle=2;fontColor=#888888;" value="Car sensors connect to cloud" vertex="1">
+          <mxGeometry height="22" width="248" x="65" y="325" as="geometry" />
+        </mxCell>
+        <mxCell id="14" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=7;fontStyle=0;fontColor=#AAAAAA;" value="AWS: Iot Core · Cognito" vertex="1">
+          <mxGeometry height="40" width="248" x="65" y="353" as="geometry" />
+        </mxCell>
+        <mxCell id="15" parent="1" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#EDE7F6;strokeColor=#6A1B9A;fontColor=#333333;fontSize=10;fontStyle=0;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="315" width="268" x="367" y="85" as="geometry" />
+        </mxCell>
+        <mxCell id="16" parent="1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#6A1B9A;strokeColor=#6A1B9A;fontColor=#FFFFFF;fontSize=13;fontStyle=1;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="50" width="268" x="367" y="85" as="geometry" />
+        </mxCell>
+        <mxCell id="17" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#6A1B9A;strokeColor=#ffffff;strokeWidth=3;fontColor=#FFFFFF;fontSize=20;fontStyle=1;verticalAlign=middle;" value="2" vertex="1">
+          <mxGeometry height="36" width="36" x="375" y="93" as="geometry" />
+        </mxCell>
+        <mxCell id="18" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#FFFFFF;" value="質問する" vertex="1">
+          <mxGeometry height="36" width="208" x="419" y="93" as="geometry" />
+        </mxCell>
+        <mxCell id="19" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#01A88D;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.transcribe;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="72" width="72" x="419" y="147" as="geometry" />
+        </mxCell>
+        <mxCell id="20" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#01A88D;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rekognition;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="72" width="72" x="511" y="147" as="geometry" />
+        </mxCell>
+        <mxCell id="21" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=10;fontStyle=2;fontColor=#6A1B9A;" value="Ask a Question" vertex="1">
+          <mxGeometry height="22" width="248" x="377" y="233" as="geometry" />
+        </mxCell>
+        <mxCell id="22" parent="1" style="line;strokeColor=#6A1B9A;fillColor=none;strokeWidth=1;opacity=40;" value="" vertex="1">
+          <mxGeometry height="2" width="228" x="387" y="257" as="geometry" />
+        </mxCell>
+        <mxCell id="23" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=12;fontStyle=0;fontColor=#6A1B9A;" value="文字・音声・写真で&#xa;何でも質問できます" vertex="1">
+          <mxGeometry height="55" width="248" x="377" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="24" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=9;fontStyle=2;fontColor=#888888;" value="Type · Speak · Photo" vertex="1">
+          <mxGeometry height="22" width="248" x="377" y="325" as="geometry" />
+        </mxCell>
+        <mxCell id="25" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=7;fontStyle=0;fontColor=#AAAAAA;" value="AWS: Transcribe · Rekognition" vertex="1">
+          <mxGeometry height="40" width="248" x="377" y="353" as="geometry" />
+        </mxCell>
+        <mxCell id="26" parent="1" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#E0F7FA;strokeColor=#00695C;fontColor=#333333;fontSize=10;fontStyle=0;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="315" width="268" x="679" y="85" as="geometry" />
+        </mxCell>
+        <mxCell id="27" parent="1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#00695C;strokeColor=#00695C;fontColor=#FFFFFF;fontSize=13;fontStyle=1;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="50" width="268" x="679" y="85" as="geometry" />
+        </mxCell>
+        <mxCell id="28" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#00695C;strokeColor=#ffffff;strokeWidth=3;fontColor=#FFFFFF;fontSize=20;fontStyle=1;verticalAlign=middle;" value="3" vertex="1">
+          <mxGeometry height="36" width="36" x="687" y="93" as="geometry" />
+        </mxCell>
+        <mxCell id="29" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#FFFFFF;" value="AIが理解する" vertex="1">
+          <mxGeometry height="36" width="208" x="731" y="93" as="geometry" />
+        </mxCell>
+        <mxCell id="30" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#01A88D;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="72" width="72" x="731" y="147" as="geometry" />
+        </mxCell>
+        <mxCell id="31" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#01A88D;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sagemaker;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="72" width="72" x="823" y="147" as="geometry" />
+        </mxCell>
+        <mxCell id="32" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=10;fontStyle=2;fontColor=#00695C;" value="AI Understands" vertex="1">
+          <mxGeometry height="22" width="248" x="689" y="233" as="geometry" />
+        </mxCell>
+        <mxCell id="33" parent="1" style="line;strokeColor=#00695C;fillColor=none;strokeWidth=1;opacity=40;" value="" vertex="1">
+          <mxGeometry height="2" width="228" x="699" y="257" as="geometry" />
+        </mxCell>
+        <mxCell id="34" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=12;fontStyle=0;fontColor=#00695C;" value="Claude 3 AIが&#xa;内容を正確に読み取る" vertex="1">
+          <mxGeometry height="55" width="248" x="689" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="35" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=9;fontStyle=2;fontColor=#888888;" value="Claude 3 reads your request" vertex="1">
+          <mxGeometry height="22" width="248" x="689" y="325" as="geometry" />
+        </mxCell>
+        <mxCell id="36" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=7;fontStyle=0;fontColor=#AAAAAA;" value="AWS: Bedrock · Sagemaker" vertex="1">
+          <mxGeometry height="40" width="248" x="689" y="353" as="geometry" />
+        </mxCell>
+        <mxCell id="37" parent="1" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#1B5E20;fontColor=#333333;fontSize=10;fontStyle=0;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="315" width="268" x="991" y="85" as="geometry" />
+        </mxCell>
+        <mxCell id="38" parent="1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#1B5E20;strokeColor=#1B5E20;fontColor=#FFFFFF;fontSize=13;fontStyle=1;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="50" width="268" x="991" y="85" as="geometry" />
+        </mxCell>
+        <mxCell id="39" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1B5E20;strokeColor=#ffffff;strokeWidth=3;fontColor=#FFFFFF;fontSize=20;fontStyle=1;verticalAlign=middle;" value="4" vertex="1">
+          <mxGeometry height="36" width="36" x="999" y="93" as="geometry" />
+        </mxCell>
+        <mxCell id="40" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#FFFFFF;" value="情報を検索する" vertex="1">
+          <mxGeometry height="36" width="208" x="1043" y="93" as="geometry" />
+        </mxCell>
+        <mxCell id="41" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#01A88D;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.kendra;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="72" width="72" x="1043" y="147" as="geometry" />
+        </mxCell>
+        <mxCell id="42" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#01A88D;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.opensearch_service;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="72" width="72" x="1135" y="147" as="geometry" />
+        </mxCell>
+        <mxCell id="43" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=10;fontStyle=2;fontColor=#1B5E20;" value="Find Right Info" vertex="1">
+          <mxGeometry height="22" width="248" x="1001" y="233" as="geometry" />
+        </mxCell>
+        <mxCell id="44" parent="1" style="line;strokeColor=#1B5E20;fillColor=none;strokeWidth=1;opacity=40;" value="" vertex="1">
+          <mxGeometry height="2" width="228" x="1011" y="257" as="geometry" />
+        </mxCell>
+        <mxCell id="45" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=12;fontStyle=0;fontColor=#1B5E20;" value="マニュアル・故障DB・&#xa;知識ベースから検索" vertex="1">
+          <mxGeometry height="55" width="248" x="1001" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="46" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=9;fontStyle=2;fontColor=#888888;" value="Searches manuals &amp; databases" vertex="1">
+          <mxGeometry height="22" width="248" x="1001" y="325" as="geometry" />
+        </mxCell>
+        <mxCell id="47" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=7;fontStyle=0;fontColor=#AAAAAA;" value="AWS: Kendra · Opensearch" vertex="1">
+          <mxGeometry height="40" width="248" x="1001" y="353" as="geometry" />
+        </mxCell>
+        <mxCell id="48" parent="1" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontColor=#333333;fontSize=10;fontStyle=0;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="315" width="268" x="1303" y="85" as="geometry" />
+        </mxCell>
+        <mxCell id="49" parent="1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#E65100;strokeColor=#E65100;fontColor=#FFFFFF;fontSize=13;fontStyle=1;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="50" width="268" x="1303" y="85" as="geometry" />
+        </mxCell>
+        <mxCell id="50" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E65100;strokeColor=#ffffff;strokeWidth=3;fontColor=#FFFFFF;fontSize=20;fontStyle=1;verticalAlign=middle;" value="5" vertex="1">
+          <mxGeometry height="36" width="36" x="1311" y="93" as="geometry" />
+        </mxCell>
+        <mxCell id="51" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#FFFFFF;" value="回答を受け取る" vertex="1">
+          <mxGeometry height="36" width="208" x="1355" y="93" as="geometry" />
+        </mxCell>
+        <mxCell id="52" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#01A88D;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.polly;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="72" width="72" x="1355" y="147" as="geometry" />
+        </mxCell>
+        <mxCell id="53" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#3F8624;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.dynamodb;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="72" width="72" x="1447" y="147" as="geometry" />
+        </mxCell>
+        <mxCell id="54" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=10;fontStyle=2;fontColor=#E65100;" value="Get Your Answer" vertex="1">
+          <mxGeometry height="22" width="248" x="1313" y="233" as="geometry" />
+        </mxCell>
+        <mxCell id="55" parent="1" style="line;strokeColor=#E65100;fillColor=none;strokeWidth=1;opacity=40;" value="" vertex="1">
+          <mxGeometry height="2" width="228" x="1323" y="257" as="geometry" />
+        </mxCell>
+        <mxCell id="56" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=12;fontStyle=0;fontColor=#E65100;" value="テキスト・音声・&#xa;診断レポートで回答" vertex="1">
+          <mxGeometry height="55" width="248" x="1313" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="57" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=9;fontStyle=2;fontColor=#888888;" value="Text · Voice · Report" vertex="1">
+          <mxGeometry height="22" width="248" x="1313" y="325" as="geometry" />
+        </mxCell>
+        <mxCell id="58" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=7;fontStyle=0;fontColor=#AAAAAA;" value="AWS: Polly · Dynamodb" vertex="1">
+          <mxGeometry height="40" width="248" x="1313" y="353" as="geometry" />
+        </mxCell>
+        <mxCell id="59" edge="1" parent="1" source="4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;strokeWidth=4;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="15" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="60" edge="1" parent="1" source="15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6A1B9A;strokeWidth=4;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="26" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="61" edge="1" parent="1" source="26" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#00695C;strokeWidth=4;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="37" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="62" edge="1" parent="1" source="37" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1B5E20;strokeWidth=4;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="48" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="63" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=12;fontStyle=1;fontColor=#333333;" value="4つの機能　/　4 Built-in Features" vertex="1">
+          <mxGeometry height="22" width="1540" x="55" y="413" as="geometry" />
+        </mxCell>
+        <mxCell id="64" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#C62828;fontColor=#333333;fontSize=10;fontStyle=0;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="105" width="371" x="55" y="437" as="geometry" />
+        </mxCell>
+        <mxCell id="65" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#C62828;strokeColor=#C62828;fontColor=#FFFFFF;fontSize=12;fontStyle=1;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="34" width="371" x="55" y="437" as="geometry" />
+        </mxCell>
+        <mxCell id="66" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=12;fontStyle=1;fontColor=#FFFFFF;" value="🔴  車の故障診断" vertex="1">
+          <mxGeometry height="32" width="355" x="63" y="439" as="geometry" />
+        </mxCell>
+        <mxCell id="67" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=9;fontStyle=0;fontColor=#C62828;" value="写真や説明で車の故障を診断" vertex="1">
+          <mxGeometry height="22" width="296" x="63" y="473" as="geometry" />
+        </mxCell>
+        <mxCell id="68" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=7;fontStyle=2;fontColor=#888888;" value="Photo or description → AI diagnoses the car problem" vertex="1">
+          <mxGeometry height="20" width="296" x="63" y="494" as="geometry" />
+        </mxCell>
+        <mxCell id="69" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=8;fontStyle=2;fontColor=#AAAAAA;" value="Self-Diagnosis" vertex="1">
+          <mxGeometry height="20" width="355" x="63" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="70" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#01A88D;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rekognition;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="56" width="56" x="361" y="472" as="geometry" />
+        </mxCell>
+        <mxCell id="71" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#1565C0;fontColor=#333333;fontSize=10;fontStyle=0;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="105" width="371" x="440" y="437" as="geometry" />
+        </mxCell>
+        <mxCell id="72" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=#1565C0;fontColor=#FFFFFF;fontSize=12;fontStyle=1;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="34" width="371" x="440" y="437" as="geometry" />
+        </mxCell>
+        <mxCell id="73" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=12;fontStyle=1;fontColor=#FFFFFF;" value="🔵  EVマニュアル質問" vertex="1">
+          <mxGeometry height="32" width="355" x="448" y="439" as="geometry" />
+        </mxCell>
+        <mxCell id="74" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=9;fontStyle=0;fontColor=#1565C0;" value="EVの操作・機能について質問" vertex="1">
+          <mxGeometry height="22" width="296" x="448" y="473" as="geometry" />
+        </mxCell>
+        <mxCell id="75" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=7;fontStyle=2;fontColor=#888888;" value="Ask anything about your EV — AI searches the official manual" vertex="1">
+          <mxGeometry height="20" width="296" x="448" y="494" as="geometry" />
+        </mxCell>
+        <mxCell id="76" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=8;fontStyle=2;fontColor=#AAAAAA;" value="EV Usage Help" vertex="1">
+          <mxGeometry height="20" width="355" x="448" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="77" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#01A88D;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.kendra;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="56" width="56" x="746" y="472" as="geometry" />
+        </mxCell>
+        <mxCell id="78" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#2E7D32;fontColor=#333333;fontSize=10;fontStyle=0;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="105" width="371" x="825" y="437" as="geometry" />
+        </mxCell>
+        <mxCell id="79" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#2E7D32;strokeColor=#2E7D32;fontColor=#FFFFFF;fontSize=12;fontStyle=1;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="34" width="371" x="825" y="437" as="geometry" />
+        </mxCell>
+        <mxCell id="80" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=12;fontStyle=1;fontColor=#FFFFFF;" value="🟢  一般チャット" vertex="1">
+          <mxGeometry height="32" width="355" x="833" y="439" as="geometry" />
+        </mxCell>
+        <mxCell id="81" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=9;fontStyle=0;fontColor=#2E7D32;" value="何でもAIと会話できます" vertex="1">
+          <mxGeometry height="22" width="296" x="833" y="473" as="geometry" />
+        </mxCell>
+        <mxCell id="82" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=7;fontStyle=2;fontColor=#888888;" value="Chat freely — type or speak, Claude 3 answers anything" vertex="1">
+          <mxGeometry height="20" width="296" x="833" y="494" as="geometry" />
+        </mxCell>
+        <mxCell id="83" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=8;fontStyle=2;fontColor=#AAAAAA;" value="General AI Chat" vertex="1">
+          <mxGeometry height="20" width="355" x="833" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="84" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#01A88D;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="56" width="56" x="1131" y="472" as="geometry" />
+        </mxCell>
+        <mxCell id="85" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#E65100;fontColor=#333333;fontSize=10;fontStyle=0;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="105" width="371" x="1210" y="437" as="geometry" />
+        </mxCell>
+        <mxCell id="86" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#E65100;strokeColor=#E65100;fontColor=#FFFFFF;fontSize=12;fontStyle=1;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="34" width="371" x="1210" y="437" as="geometry" />
+        </mxCell>
+        <mxCell id="87" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=12;fontStyle=1;fontColor=#FFFFFF;" value="🟠  自動車アドバイス" vertex="1">
+          <mxGeometry height="32" width="355" x="1218" y="439" as="geometry" />
+        </mxCell>
+        <mxCell id="88" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=9;fontStyle=0;fontColor=#E65100;" value="運転・整備・EVの知識" vertex="1">
+          <mxGeometry height="22" width="296" x="1218" y="473" as="geometry" />
+        </mxCell>
+        <mxCell id="89" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=7;fontStyle=2;fontColor=#888888;" value="Driving tips, EV best practices, automotive expertise" vertex="1">
+          <mxGeometry height="20" width="296" x="1218" y="494" as="geometry" />
+        </mxCell>
+        <mxCell id="90" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=8;fontStyle=2;fontColor=#AAAAAA;" value="Auto Guidance" vertex="1">
+          <mxGeometry height="20" width="355" x="1218" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="91" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#3F8624;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="56" width="56" x="1516" y="472" as="geometry" />
+        </mxCell>
+        <mxCell id="92" parent="1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#DD344C;fontColor=#B71C1C;fontSize=9;fontStyle=0;verticalAlign=middle;spacingTop=4;spacingBottom=4;" value="" vertex="1">
+          <mxGeometry height="48" width="1540" x="55" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="93" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#DD344C;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.waf;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="62" y="553" as="geometry" />
+        </mxCell>
+        <mxCell id="94" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#DD344C;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.shield;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="108" y="553" as="geometry" />
+        </mxCell>
+        <mxCell id="95" parent="1" style="outlineConnect=0;gradientColor=none;strokeColor=none;fillColor=#DD344C;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.guardduty;labelPosition=none;verticalLabelPosition=none;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="154" y="553" as="geometry" />
+        </mxCell>
+        <mxCell id="96" parent="1" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=8;fontStyle=0;fontColor=#B71C1C;" value="セキュリティ / Security：全データ暗号化 · COCORO MEMBERS IDログイン · AWS WAF · Shield · GuardDuty · 日本個人情報保護法 &amp; METI AIガイドライン準拠" vertex="1">
+          <mxGeometry height="48" width="900" x="200" y="553" as="geometry" />
+        </mxCell>
+        <mxCell id="97" parent="1" style="text;html=1;align=right;verticalAlign=middle;fontSize=28;fontStyle=1;fontColor=#CC0000;" value="SHARP" vertex="1">
+          <mxGeometry height="48" width="165" x="1430" y="550" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
